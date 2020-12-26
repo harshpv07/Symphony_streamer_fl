@@ -23,6 +23,11 @@ class _LandingState extends State<Landing> {
       _player.seek(newpos);
     }
 
+    @override
+    void initState() {
+      super.initState();
+    }
+
     Widget slider() {
       return Slider.adaptive(
           activeColor: Colors.amber,
