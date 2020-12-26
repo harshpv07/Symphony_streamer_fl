@@ -9,122 +9,243 @@ class Landing extends StatefulWidget {
 }
 
 class _LandingState extends State<Landing> {
-  bool isplaying = false;
-  IconData idata = Icons.play_arrow_sharp;
-  @override
-  Widget build(BuildContext context) {
-    AudioPlayer _player;
-    AudioCache cache;
-    Duration position = new Duration();
-    Duration musicLength = new Duration();
+  bool playing = false; // at the begining we are not playing any song
+  IconData playBtn = Icons.play_arrow; // the main state of the play button icon
 
-    void seektosec(int sec) {
-      Duration newpos = new Duration(seconds: sec);
-      _player.seek(newpos);
-    }
+  AudioPlayer _player;
+  AudioCache cache;
+  bool status = true;
+  Duration position = new Duration();
+  Duration musicLength = new Duration();
+  Color accent1 = Colors.white;
+  Color accent2 = Colors.white;
+  Color accent3 = Colors.black;
+  Color accent4 = Colors.black;
+  Color accent5 = Colors.white;
+  Color accent6 = Colors.white;
+  //we will create a custom slider
 
-    @override
-    void initState() {
-      super.initState();
-    }
-
-    Widget slider() {
-      return Slider.adaptive(
-          activeColor: Colors.amber,
-          inactiveColor: Colors.black,
+  Widget slider() {
+    return Container(
+      width: 300.0,
+      child: Slider.adaptive(
+          activeColor: Colors.black,
+          inactiveColor: Colors.grey[350],
           value: position.inSeconds.toDouble(),
           max: musicLength.inSeconds.toDouble(),
           onChanged: (value) {
-            seektosec(value.toInt());
-          });
-    }
+            seekToSec(value.toInt());
+          }),
+    );
+  }
 
-    //pipeline1;
+  void seekToSec(int sec) {
+    Duration newPos = Duration(seconds: sec);
+    _player.seek(newPos);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _player = AudioPlayer();
+    cache = AudioCache(fixedPlayer: _player, prefix: 'assets/audio/');
+
+    _player.durationHandler = (d) {
+      setState(() {
+        musicLength = d;
+      });
+    };
+
+    _player.positionHandler = (p) {
+      setState(() {
+        position = p;
+      });
+    };
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          centerTitle: true,
-          backgroundColor: Colors.grey[900],
-          title: Text(
-            "Symphony",
-            style: (GoogleFonts.sacramento(fontSize: 30)),
+      appBar: AppBar(
+        centerTitle: true,
+        backgroundColor: accent1,
+        title: Text(
+          "Symphony",
+          style: (GoogleFonts.sacramento(fontSize: 30, color: accent4)),
+        ),
+        actions: [
+          Switch(
+            value: status,
+            onChanged: (value) {
+              if (value == true) {
+                setState(() {
+                  status = value;
+                  accent1 = Colors.grey[900];
+                  accent2 = Colors.grey[500];
+                  accent3 = Colors.white;
+                  accent4 = Colors.white;
+                });
+              } else {
+                setState(() {
+                  status = value;
+                  accent1 = Colors.white;
+                  accent2 = Colors.white;
+                  accent3 = Colors.black;
+                  accent4 = Colors.black;
+                });
+              }
+            },
+            activeColor: Colors.white,
+          )
+        ],
+      ),
+      body: Container(
+        width: double.infinity,
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [
+                accent1,
+                accent2,
+              ]),
+        ),
+        child: Padding(
+          padding: EdgeInsets.only(
+            top: 48.0,
+          ),
+          child: Container(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(
+                  height: 24.0,
+                ),
+                Center(
+                  child: Container(
+                    width: 280.0,
+                    height: 280.0,
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(30.0),
+                        image: DecorationImage(
+                          image: AssetImage("./lib/pics/album1.png"),
+                        )),
+                  ),
+                ),
+                SizedBox(
+                  height: 18.0,
+                ),
+                Center(
+                    child: Text(
+                  "Latch",
+                  style: TextStyle(
+                    fontSize: 25,
+                    color: accent3,
+                    fontWeight: FontWeight.w500,
+                  ),
+                )),
+                SizedBox(height: 5),
+                Center(
+                  child: Text(
+                    "Disclosure",
+                    style: TextStyle(
+                      color: accent3,
+                      fontSize: 32.0,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  height: 30.0,
+                ),
+                Expanded(
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(30.0),
+                        topRight: Radius.circular(30.0),
+                      ),
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Container(
+                          width: 500.0,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Text(
+                                "${position.inMinutes}:${position.inSeconds.remainder(60)}",
+                                style: TextStyle(
+                                  fontSize: 18.0,
+                                ),
+                              ),
+                              slider(),
+                              Text(
+                                "${musicLength.inMinutes}:${musicLength.inSeconds.remainder(60)}",
+                                style: TextStyle(
+                                  fontSize: 18.0,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            IconButton(
+                              iconSize: 45.0,
+                              color: Colors.black,
+                              onPressed: () {},
+                              icon: Icon(
+                                Icons.skip_previous,
+                              ),
+                            ),
+                            IconButton(
+                              iconSize: 62.0,
+                              color: Colors.black,
+                              onPressed: () {
+                                if (!playing) {
+                                  cache.play("sounds.mp3");
+                                  setState(() {
+                                    playBtn = Icons.pause;
+                                    playing = true;
+                                  });
+                                } else {
+                                  _player.pause();
+                                  setState(() {
+                                    playBtn = Icons.play_arrow;
+                                    playing = false;
+                                  });
+                                }
+                              },
+                              icon: Icon(
+                                playBtn,
+                              ),
+                            ),
+                            IconButton(
+                              iconSize: 45.0,
+                              color: Colors.black,
+                              onPressed: () {},
+                              icon: Icon(
+                                Icons.skip_next,
+                              ),
+                            ),
+                          ],
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
-        body: Container(
-            width: double.infinity,
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [
-                    Colors.grey[900],
-                    Colors.grey[400],
-                  ]),
-            ),
-            child: Padding(
-              padding: EdgeInsets.fromLTRB(10, 60, 10, 0),
-              child: Container(
-                  child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Center(
-                    child: Image.asset("./lib/pics/album1.png"),
-                  ),
-                  SizedBox(
-                    height: 30,
-                  ),
-                  Center(
-                    child: Text(
-                      "Disclosure",
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 25,
-                          fontWeight: FontWeight.bold,
-                          letterSpacing: 2),
-                    ),
-                  ),
-                  SizedBox(
-                    height: 5,
-                  ),
-                  Center(
-                    child: Text(
-                      "Latch",
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                          letterSpacing: 2),
-                    ),
-                  ),
-                  SizedBox(height: 40),
-                  slider(),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      IconButton(
-                          icon: Icon(
-                            Icons.skip_previous_sharp,
-                            size: 40,
-                          ),
-                          onPressed: () {}),
-                      IconButton(
-                        onPressed: () async {},
-                        icon: Icon(
-                          idata,
-                          size: 40,
-                        ),
-                      ),
-                      IconButton(
-                        icon: Icon(
-                          Icons.skip_next,
-                          size: 40,
-                        ),
-                        onPressed: () {},
-                      ),
-                    ],
-                  ),
-                ],
-              )),
-            )));
+      ),
+    );
   }
 }
