@@ -14,15 +14,20 @@ class _LandingState extends State<Landing> {
 
   AudioPlayer _player;
   AudioCache cache;
-  bool status = true;
+  bool status = false;
   Duration position = new Duration();
   Duration musicLength = new Duration();
   Color accent1 = Colors.white;
   Color accent2 = Colors.white;
   Color accent3 = Colors.black;
-  Color accent4 = Colors.black;
+  Color accent4 = Colors.yellow[900];
   Color accent5 = Colors.white;
   Color accent6 = Colors.white;
+  String song_name = "Latch";
+  String band_name = "Disclosure";
+  String image_location = "./lib/pics/album1.png";
+  String song_location = "sounds.mp3";
+
   //we will create a custom slider
 
   Widget slider() {
@@ -91,7 +96,7 @@ class _LandingState extends State<Landing> {
                   accent1 = Colors.white;
                   accent2 = Colors.white;
                   accent3 = Colors.black;
-                  accent4 = Colors.black;
+                  accent4 = Colors.yellow[900];
                 });
               }
             },
@@ -129,7 +134,7 @@ class _LandingState extends State<Landing> {
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(30.0),
                         image: DecorationImage(
-                          image: AssetImage("./lib/pics/album1.png"),
+                          image: AssetImage(image_location),
                         )),
                   ),
                 ),
@@ -138,7 +143,7 @@ class _LandingState extends State<Landing> {
                 ),
                 Center(
                     child: Text(
-                  "Latch",
+                  song_name,
                   style: TextStyle(
                     fontSize: 25,
                     color: accent3,
@@ -148,7 +153,7 @@ class _LandingState extends State<Landing> {
                 SizedBox(height: 5),
                 Center(
                   child: Text(
-                    "Disclosure",
+                    band_name,
                     style: TextStyle(
                       color: accent3,
                       fontSize: 32.0,
@@ -210,7 +215,8 @@ class _LandingState extends State<Landing> {
                               color: Colors.black,
                               onPressed: () {
                                 if (!playing) {
-                                  cache.play("sounds.mp3");
+                                  cache.play(song_location);
+                                  //cache.load("sounds.mp3");
                                   setState(() {
                                     playBtn = Icons.pause;
                                     playing = true;
