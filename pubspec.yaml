@@ -35,6 +35,9 @@ dev_dependencies:
     sdk: flutter
   google_fonts: ^1.1.1
   audioplayers: ^0.17.0
+  passwordfield: ^0.0.82
+  http: ^0.12.2
+  requests: ^3.3.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
