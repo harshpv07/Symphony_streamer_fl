@@ -73,6 +73,7 @@ class _LandingState extends State<Landing> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
+        automaticallyImplyLeading: false,
         backgroundColor: accent1,
         title: Text(
           "Symphony",

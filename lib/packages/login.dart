@@ -7,9 +7,10 @@ import 'package:http/http.dart' as http;
 import 'package:requests/requests.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'Animations/spinkitani.dart';
-
+import 'package:nice_button/NiceButton.dart';
 import 'landing_page.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'signup.dart';
 
 class Login extends StatefulWidget {
   @override
@@ -44,6 +45,7 @@ class _LoginState extends State<Login> {
       return response;
     }
 
+    bool pressed = false;
     return Scaffold(
       appBar: AppBar(
           centerTitle: true,
@@ -64,14 +66,23 @@ class _LoginState extends State<Login> {
               ]),
         ),
         child: Padding(
-          padding: EdgeInsets.fromLTRB(15, 20, 15, 10),
+          padding: EdgeInsets.fromLTRB(15, 20, 15, 5),
           child: Container(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                SizedBox(height: 40),
+                Text(
+                  "Welcome Back!",
+                  style: TextStyle(fontSize: 35),
+                ),
+                SizedBox(
+                  height: 30,
+                ),
                 TextFormField(
                   decoration: InputDecoration(
+                      prefixIcon: Icon(Icons.email),
                       labelText: "Username",
                       labelStyle: TextStyle(color: Colors.black, fontSize: 20)),
                   autocorrect: true,
@@ -81,9 +92,11 @@ class _LoginState extends State<Login> {
                     });
                   },
                 ),
+                SizedBox(height: 10),
                 TextFormField(
                   obscureText: true,
                   decoration: const InputDecoration(
+                      prefixIcon: Icon(Icons.security),
                       labelText: 'Password',
                       border: InputBorder.none,
                       labelStyle: TextStyle(color: Colors.black, fontSize: 20)),
@@ -98,13 +111,33 @@ class _LoginState extends State<Login> {
                     }
                   },
                 ),
+                Expanded(
+                  child: Align(
+                    alignment: Alignment.topRight,
+                    child: Padding(
+                      padding: EdgeInsets.only(bottom: 10.0),
+                      child: FlatButton(
+                        child: Text(
+                          "Forgot password",
+                          style: TextStyle(color: Colors.white),
+                        ),
+                        onPressed: () {
+                          print("you clicked forgot password");
+                        },
+                      ),
+                    ),
+                  ),
+                ),
                 SizedBox(height: 30),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    spinkt(),
-                    RaisedButton(
-                      color: Colors.grey[900],
+                    NiceButton(
+                      width: 255,
+                      elevation: 8.0,
+                      radius: 52.0,
+                      text: "Login",
+                      background: Colors.grey[900],
                       onPressed: () async {
                         // print(username);
                         // print(password);
@@ -116,6 +149,9 @@ class _LoginState extends State<Login> {
                             "http://192.168.29.143:5000/login", dataa);
 
                         if (resp_mess == "true") {
+                          setState(() {
+                            pressed = true;
+                          });
                           print("username verified");
                           Navigator.push(
                               context,
@@ -124,7 +160,7 @@ class _LoginState extends State<Login> {
                         } else {
                           Fluttertoast.showToast(
                               msg:
-                                  "Incorrect Username or passord. Try again !!",
+                                  "Incorrect Username or password. Try again !!",
                               toastLength: Toast.LENGTH_SHORT,
                               gravity: ToastGravity.CENTER,
                               timeInSecForIosWeb: 1,
@@ -133,45 +169,62 @@ class _LoginState extends State<Login> {
                               fontSize: 16.0);
                         }
                       },
-                      child: Text(
-                        "Login",
-                        style: TextStyle(color: Colors.white),
-                      ),
                     ),
-                    RaisedButton(
-                      color: Colors.grey[900],
-                      onPressed: () async {
-                        // print(username);
-                        // print(password);
 
-                        Map dataa = {
-                          "username": username,
-                          "password": password,
-                        };
-                        await postRequest(
-                            "http://192.168.29.143:5000/signup", dataa);
-                        if (resp_mess == "true") {
+                    // RaisedButton(
+                    //   color: Colors.grey[900],
+                    //   onPressed: () async {
+                    //     // print(username);
+                    //     // print(password);
+
+                    //     Map dataa = {
+                    //       "username": username,
+                    //       "password": password,
+                    //     };
+                    //     await postRequest(
+                    //         "http://192.168.29.143:5000/signup", dataa);
+                    //     if (resp_mess == "true") {
+                    //       Navigator.push(
+                    //           context,
+                    //           MaterialPageRoute(
+                    //               builder: (context) => Landing()));
+                    //     } else {
+                    //       Fluttertoast.showToast(
+                    //           msg: "Username exists",
+                    //           toastLength: Toast.LENGTH_SHORT,
+                    //           gravity: ToastGravity.CENTER,
+                    //           timeInSecForIosWeb: 1,
+                    //           backgroundColor: Colors.red,
+                    //           textColor: Colors.white,
+                    //           fontSize: 16.0);
+                    //     }
+                    //   },
+                    //   child: Text(
+                    //     "Signup",
+                    //     style: TextStyle(color: Colors.white),
+                    //   ),
+                    // ),
+                  ],
+                ),
+                Expanded(
+                  child: Align(
+                    alignment: FractionalOffset.bottomCenter,
+                    child: Padding(
+                      padding: EdgeInsets.only(bottom: 10.0),
+                      child: FlatButton(
+                        child: Text(
+                          "Not registered? Click here to sign up",
+                          style: TextStyle(color: Colors.white),
+                        ),
+                        onPressed: () {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => Landing()));
-                        } else {
-                          Fluttertoast.showToast(
-                              msg: "Username exists",
-                              toastLength: Toast.LENGTH_SHORT,
-                              gravity: ToastGravity.CENTER,
-                              timeInSecForIosWeb: 1,
-                              backgroundColor: Colors.red,
-                              textColor: Colors.white,
-                              fontSize: 16.0);
-                        }
-                      },
-                      child: Text(
-                        "Signup",
-                        style: TextStyle(color: Colors.white),
+                                  builder: (context) => Signup()));
+                        },
                       ),
                     ),
-                  ],
+                  ),
                 ),
               ],
             ),
