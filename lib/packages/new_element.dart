@@ -120,6 +120,7 @@ class _New_eleState extends State<New_ele> {
                   // print(reminder_message);
                   await postRequest("http://192.168.29.143:5000/lists", sendd);
                   print(store_response_data);
+                  Navigator.pop(context);
                   // setState(() {
                   //   reminder_message = "";
                   //   _hour = "";
