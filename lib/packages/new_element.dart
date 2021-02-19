@@ -10,6 +10,7 @@ class New_ele extends StatefulWidget {
 
 class _New_eleState extends State<New_ele> {
   DateTime selectedDate = DateTime.now();
+  Map store_response_data;
   String _hour, _minute, _time;
   String dateTime;
   String reminder_message = "";
@@ -58,9 +59,10 @@ class _New_eleState extends State<New_ele> {
     var response = await http.post(url,
         headers: {"Content-Type": "application/json"}, body: body);
     print("status code ->" + "${response.statusCode}");
-    print("response body -> " + "${response.body}");
+    //print("response body -> " + "${response.body}");
     setState(() {
       resp_mess = response.body;
+      store_response_data = json.decode(response.body);
     });
     return response;
   }
@@ -117,6 +119,7 @@ class _New_eleState extends State<New_ele> {
                   // print(_minute);
                   // print(reminder_message);
                   await postRequest("http://192.168.29.143:5000/lists", sendd);
+                  print(store_response_data);
                   // setState(() {
                   //   reminder_message = "";
                   //   _hour = "";

@@ -1,6 +1,9 @@
+import 'dart:convert';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'new_element.dart';
+import 'package:http/http.dart' as http;
 
 // MyApp is a StatefulWidget. This allows updating the state of the
 // widget when an item is removed.
@@ -12,7 +15,38 @@ class Signup extends StatefulWidget {
 }
 
 class _SignupState extends State<Signup> {
-  final items = List<String>.generate(20, (i) => "Item ${i + 1}");
+  String resp_mess = "";
+  final items = [];
+  Future<http.Response> postRequest(String urll, Map jsonmap) async {
+    setState(() {
+      resp_mess = "";
+    });
+    var url = urll;
+
+    Map data = jsonmap;
+    //encode Map to JSON
+    var body = json.encode(data);
+
+    var response = await http.post(url,
+        headers: {"Content-Type": "application/json"}, body: body);
+    print("status code ->" + "${response.statusCode}");
+    //print("response body -> " + "${response.body}");
+    Map tc = json.decode(response.body);
+    setState(() {
+      resp_mess = response.body;
+    });
+    print(tc);
+    tc.forEach((k, v) => items.add(k));
+
+    return response;
+  }
+
+  @override
+  void initState() {
+    postRequest("http://192.168.29.143:5000/return_store_values", {});
+
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
